@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+       #map {
+        height: 400px;
+        width: 100%;
+       }
+    </style>
+    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/1.0.0/firebaseui.css" />
+  </head>
+<body>
+
+<button onclick="logout()">Logout</button>
+
+<p>Click the button to get your coordinates.</p>
+
+<input onclick="trace()" type="button" value="Start" id="trace"></input>
+
+<div id="map"></div>
+<h1 id="bigOne"></h1>
+<p id="demo"></p>
+
+<script src="https://www.gstatic.com/firebasejs/3.2.0/firebase.js"></script>
+<script src="https://cdn.firebase.com/libs/firebaseui/1.0.0/firebaseui.js"></script>
+
+<script>
+
+// Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyBmZe7mI0oqJGxn1UbICs38_i53Re4E0fk",
+    authDomain: "tracebird-5c028.firebaseapp.com",
+    databaseURL: "https://tracebird-5c028.firebaseio.com",
+    storageBucket: "tracebird-5c028.appspot.com",
+    messagingSenderId: "570715932900"
+  };
+  firebase.initializeApp(config);
+
+  //Global vars
+  var isTraceOn = "true";
+  function trace(){
+      var elem = document.getElementById("trace");
+      if (elem.value=="Start") {
+        elem.value = "Stop";
+        isTraceOn = true;
+        getLocation();
+        console.log("Starting...");
+      }
+      else{
+        elem.value = "Start";
+        isTraceOn = false;
+        console.log("Stopping...");
+      }
+  }
+
+  // consumer side ---------------------------------
+  //parse url to get the id
+  var id=getParameterByName("id",null);
+  
+  //query db to retrieve data
+  if(id!=null){
+
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {
+          var dbRef = firebase.database().ref().child('users').child(id);
+          // Attach an asynchronous callback to read the data at our posts reference
+          dbRef.on("value", function(snapshot) {
+            console.log(snapshot.val());
+          // Update the google maps app location link
+          x.innerHTML = "<a href='geo:0,0?q=" + snapshot.val().Latitude + "," + snapshot.val().Longitude + "(" + snapshot.val().Name +")'>open map</a>";
+          }, function (errorObject) {
+            console.log("The read failed: " + errorObject.code);
+          });
+        console.log("signed");
+
+      } else {
+        console.log("not signed");      
+          x.innerHTML = "<div id='firebaseui-auth-container'></div>"
+      }
+    });
+      //alert('login');
+      /*dbRef.on("child_changed", function(snapshot) {
+        var changedPost = snapshot.val();
+        console.log("The updated post title is " + changedPost);
+      });*/
+  }
+
+  //TODO: show on map 
+
+
+  // Producer side --------------------------------------
+  
+  var x = document.getElementById("demo");
+
+  function getLocation() {
+      if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(showPosition);
+      } else { 
+          x.innerHTML = "Geolocation is not supported by this browser.";
+      }
+  }
+
+  // get the locations and put into db
+  async function showPosition(position) {
+      var label = "Latitude: " + position.coords.latitude + 
+      "<br>Longitude: " + position.coords.longitude;
+
+    var user = firebase.auth().currentUser;
+    
+    if (user != null) {
+        var map = initMap(position.coords.latitude, position.coords.longitude);
+        var shareURL = "https://tracebird-5c028.firebaseapp.com/app.html?id=" + user.uid;
+        x.innerHTML = label + "<br> Share my trace : " + shareURL + "<br><a href='whatsapp://send?text=https://tracebird-5c028.firebaseapp.com check my trail at "+ shareURL +"' data-action='share/whatsapp/share'>Share via Whatsapp</a>";
+    } else {
+      alert("Login to continue");
+      return;
+    }
+    // poll after interval and update location in db
+    for(count = 0; count < 100; count++){
+    	if (user != null) {
+    	  name = user.displayName;
+    	  email = user.email;
+    	  uid = user.uid;
+    		firebase.database().ref('/users/'+uid).set({
+    		Latitude: position.coords.latitude,
+    		Longitude: position.coords.longitude,
+        Timestamp: ""+ new Date(),
+        Name: name
+    	  });
+
+        refresh(map, position.coords.latitude, position.coords.longitude);
+      }
+      if(!isTraceOn)
+        break;
+      await sleep(5000);
+      var bigOne = document.getElementById('bigOne');
+
+    //dbRef.on('value', snap => bigOne.innerText = snap.val());
+    }
+
+  }
+
+  function logout() {
+    firebase.auth().signOut().then(function() {
+      console.log('Signed Out');
+    }, function(error) {
+      console.error('Sign Out Error', error);
+    });
+    window.location = "https://tracebird-5c028.firebaseapp.com"
+  }
+
+  //Utils
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  function initMap(latitude, longitude) {
+            var uluru = {lat: latitude, lng: longitude};
+            var map = new google.maps.Map(document.getElementById('map'), {
+              zoom: 10,
+              center: uluru
+            });
+
+            return map;
+          }
+
+  function refresh(map,latitude, longitude) {
+            var marker = new google.maps.Marker({
+              position: {lat: latitude, lng: longitude},
+              map: map
+            });
+
+            console.log(latitude + " , " + longitude);
+  }
+
+  function getParameterByName(name, url) {
+    if (!url) {
+      url = window.location.href;
+    }
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+  }
+
+        // FirebaseUI config.
+      var uiConfig = {
+        callbacks: {
+          signInSuccess: function(currentUser, credential, redirectUrl) {
+            // Do something.
+            // Return type determines whether we continue the redirect automatically
+            // or whether we leave that to developer to handle.
+            return true;
+          },
+          uiShown: function() {
+            // The widget is rendered.
+            // Hide the loader.
+            document.getElementById('loader').style.display = 'none';
+          }
+        },
+        credentialHelper: firebaseui.auth.CredentialHelper.ACCOUNT_CHOOSER_COM,
+        // Query parameter name for mode.
+        queryParameterForWidgetMode: 'mode',
+        // Query parameter name for sign in success url.
+        queryParameterForSignInSuccessUrl: 'signInSuccessUrl',
+        // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
+        signInFlow: 'popup',
+        signInSuccessUrl: window.location.href,
+        signInOptions: [
+          // Leave the lines as is for the providers you want to offer your users.
+          firebase.auth.GoogleAuthProvider.PROVIDER_ID
+        ],
+        // Terms of service url.
+        tosUrl: '<your-tos-url>'
+      };
+
+      var ui = new firebaseui.auth.AuthUI(firebase.auth());
+      // The start method will wait until the DOM is loaded.
+      ui.start('#firebaseui-auth-container', uiConfig);
+</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDb9RwoJsN9Ug6HKusx33TANGadP556rFU">
+</script>
+
+</body>
+</html>
