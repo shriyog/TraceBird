@@ -37,7 +37,7 @@ function buildMap(latitude, longitude) {
 //common
 function setMarkerPosition(latitude, longitude) {
   marker.setPosition(new google.maps.LatLng(latitude, longitude));
-  console.log(latitude, longitude);
+  //console.log(latitude, longitude);
 }
 
 
@@ -46,6 +46,8 @@ function watchCurrentPosition() {
   if (navigator.geolocation) {
     var positionTimer = navigator.geolocation.watchPosition(function(position) {
       //oprations to performs when user location is changed
+      //hit db
+      updateDatabase(position.coords.latitude, position.coords.longitude);
       //set marker
       setMarkerPosition(position.coords.latitude, position.coords.longitude);
       map.panTo(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));

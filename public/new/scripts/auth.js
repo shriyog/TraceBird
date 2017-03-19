@@ -10,7 +10,7 @@ var uiConfig = {
         uiShown: function() {
             // The widget is rendered.
             // Hide the loader.
-            document.getElementById('signin-container').style.display = 'none';
+            //document.getElementById('loader').style.display = 'none';
         }
     },
     credentialHelper: firebaseui.auth.CredentialHelper.ACCOUNT_CHOOSER_COM,

@@ -1,3 +1,8 @@
+#signin-container {
+/* invisible when loaded, but visible if user not logged*/
+    display: none;
+}
+
 /* overlay styles, all needed */
 .overlay {
     position: fixed;

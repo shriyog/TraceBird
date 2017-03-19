@@ -3,8 +3,22 @@ var isTraceStarted = false;
 
 function init() {
     //alert(checkRole());
+    firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+            // User is signed in.
+            console.log("user is logged in");
+            document.getElementById('signin-container').style.display = 'none';
+        }
+        else {
+            // No user is signed in.
+            console.log("user not logged in");
+            document.getElementById('signin-container').style.display = 'block';
+            ui.start('#firebaseui-auth-container', uiConfig);
+        }
+    });
+
     //check if trace was already started using session var
-    if (sessionStorage.getItem("isTraceStarted")=="true"){
+    if (sessionStorage.getItem("isTraceStarted") == "true") {
         //continue the trace
         startProducer();
     }
@@ -18,7 +32,7 @@ function startProducer() {
     initializeMap();
     watchCurrentPosition();
     showShareBanner();
-    isTraceStarted = true;
+    isTraceStarted = "true";
     sessionStorage.setItem("isTraceStarted", isTraceStarted);
 }
 
