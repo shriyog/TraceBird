@@ -56,10 +56,10 @@ function startConsumer() {
         var dbRef = firebase.database().ref().child('users').child(id);
 
         //Retrieve info one time
-        return dbRef.once('value').then(function(snapshot) {
+        dbRef.once('value').then(function(snapshot) {
             showDisplayBanner(snapshot.val().Name, snapshot.val().Latitude, snapshot.val().Longitude);
         });
-
+        
         // Attach an asynchronous callback to read the data at our posts reference
         dbRef.on("value", function(snapshot) {
             console.log(snapshot.val());

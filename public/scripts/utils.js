@@ -2,7 +2,7 @@
 //shows url, whatsapp share
 function showShareBanner() {
   var banner = document.getElementById('shareBanner');
-  var shareURL = "https://tracebird-5c028.firebaseapp.com/new/index.html?id=" + currentUser.uid;
+  var shareURL = "https://tracebird-5c028.firebaseapp.com/index.html?id=" + currentUser.uid;
   banner.innerHTML = "<input type='text' id='shareURL' value=" + shareURL + " class='field left' readonly> \
   <br>\
   <a href='whatsapp://send?text=Check me out at " + shareURL + " ' class='button button-default'>Share using WhatsApp</a>";
@@ -17,6 +17,6 @@ function showDisplayBanner(name, latitude, longitude) {
 
   var footerBanner = document.getElementById('footerBanner');
   footerBanner.innerHTML = "<a class='button button-warning' href='geo:0,0?q=" + latitude + "," + longitude + "(" + name + ")'>Open in Maps</a>\
-  <a class='button button-primary' href='/new/index.html'>Start your own trail</a>"
+  <a class='button button-primary' href='https://tracebird-5c028.firebaseapp.com'>Start your own trail</a>"
   document.getElementById('shareBanner').style.display = 'block';
 }
