@@ -10,6 +10,10 @@
   width: 100%;
 }
 
+#shareURL{
+  width: 40%;
+}
+
 .container {
   max-width: 100%;
 }

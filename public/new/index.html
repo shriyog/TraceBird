@@ -24,26 +24,59 @@
   <link rel="stylesheet" href="css/normalize.css">
   <link rel="stylesheet" href="css/skeleton.css">
   <link rel="stylesheet" href="css/custom.css">
+  <link rel="stylesheet" href="css/signin.css">
 
   <!-- Favicon
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link rel="icon" type="image/png" href="images/favicon.png">
 
+  <!-- Firebase
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <script src="https://cdn.firebase.com/libs/firebaseui/1.0.0/firebaseui.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/3.7.0/firebase.js"></script>
+
+  <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/1.0.0/firebaseui.css" />
+
+  <script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyBmZe7mI0oqJGxn1UbICs38_i53Re4E0fk",
+      authDomain: "tracebird-5c028.firebaseapp.com",
+      databaseURL: "https://tracebird-5c028.firebaseio.com",
+      storageBucket: "tracebird-5c028.appspot.com",
+      messagingSenderId: "570715932900"
+    };
+    firebase.initializeApp(config);
+  </script>
+  <!-- Loading map.js at first
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+
+  <script type="text/javascript" src="scripts/map.js"></script>
 
 </head>
 
 <body>
 
+  <!--signin div -->
+  <div id="signin-container">
+    <div class="overlay"></div>
+    <div class="modal" id="firebaseui-auth-container"></div>
+  </div>
   <!-- Title
       <img src="images/background.jpg" alt="Smiley face" height="100%" width="100%">
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  
-  <img src="images/background.jpg" alt="Smiley face" height="100%" width="100%">
-  
+
+  <img src="images/background.jpg" alt="Top Banner" height="100%" width="100%">
+
   <section class="header">
     <h1 class="title">Tracebird</h1>
     <h3 class="title">Simple Realtime location trails</h3>
-    <a class="button button-primary" onclick="startTrail()">Start the trail</a>
+    <a class="button button-primary" onclick="startProducer()">Start the trail</a>
+
+    <section id="shareBanner">
+      <h5 class="title">Start your location trace and let people find you on map in realtime</h5>
+      <h6 class="title">Share your location thread with friends to co-ordinate drive to a new spot, or maybe use this to ensure your safety to family while to reach places</h6>
+    </section>
   </section>
 
   <!-- Map div
@@ -52,10 +85,14 @@
     <div id="map-canvas"></div>
   </div>
 
+
   <!-- scripts
   ----------------------------------------------------->
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDb9RwoJsN9Ug6HKusx33TANGadP556rFU"></script>
   <script type="text/javascript" src="scripts/map.js"></script>
+  <script type="text/javascript" src="scripts/utils.js"></script>
+  <script type="text/javascript" src="scripts/main.js"></script>
+  <script type="text/javascript" src="scripts/auth.js"></script>
 
 </body>
 
