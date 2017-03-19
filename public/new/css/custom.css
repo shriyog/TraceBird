@@ -1,8 +1,8 @@
 #map-canvas {
-  display:none;
+  display: none;
   border-color: #33c3f0;
   border-style: none;
-  border-width: 2px; 
+  border-width: 2px;
   border-radius: 6px;
   margin-top: 4rem;
   margin-bottom: 4rem;
@@ -10,8 +10,13 @@
   width: 100%;
 }
 
-#shareURL{
+#shareURL {
   width: 40%;
+  border: 1px solid #33c3f0;
+}
+
+#shareBanner {
+  display: none;
 }
 
 .container {

@@ -70,10 +70,10 @@
 
   <section class="header">
     <h1 class="title">Tracebird</h1>
-    <h3 class="title">Simple Realtime location trails</h3>
-    <a class="button button-primary" onclick="startProducer()">Start the trail</a>
+    <h3 class="title">Realtime location trails</h3>
 
     <section id="shareBanner">
+      <a class="button button-primary" id="startTraceButton" onclick="startProducer()">Start the trail</a>
       <h5 class="title">Start your location trace and let people find you on map in realtime</h5>
       <h6 class="title">Share your location thread with friends to co-ordinate drive to a new spot, or maybe use this to ensure your safety to family while to reach places</h6>
     </section>
@@ -85,6 +85,8 @@
     <div id="map-canvas"></div>
   </div>
 
+  <section class="header" id="footerBanner">
+  </section>
 
   <!-- scripts
   ----------------------------------------------------->
@@ -94,8 +96,7 @@
   <script type="text/javascript" src="scripts/auth.js"></script>
   <script type="text/javascript" src="scripts/db.js"></script>
   <script type="text/javascript" src="scripts/main.js"></script>
-
-
+  
 </body>
 
 </html>

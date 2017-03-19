@@ -48,7 +48,7 @@ function watchCurrentPosition() {
       //oprations to performs when user location is changed
       //hit db
       updateDatabase(position.coords.latitude, position.coords.longitude);
-      //set marker
+      //set marker and recenter
       setMarkerPosition(position.coords.latitude, position.coords.longitude);
       map.panTo(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
     });
